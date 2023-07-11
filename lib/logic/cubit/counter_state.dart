@@ -9,7 +9,7 @@ class CounterState {
   bool wasIncremented;
 
   CounterState({
-     this.wasIncremented = false,
+    this.wasIncremented = false,
     required this.counterValue,
   });
 }
