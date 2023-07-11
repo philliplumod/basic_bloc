@@ -1,5 +1,5 @@
 import 'package:counter_app/logic/cubit/counter_cubit.dart';
-import 'package:counter_app/logic/router/app_router.dart';
+import 'package:counter_app/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // global access because i wrapped the MaterialApp with BlocProvider
     return BlocProvider(
       create: (context) => CounterCubit(),
       child: MaterialApp(
@@ -33,11 +34,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  @override
-  void dispose() {
-    _appRouter.dispose();
-    super.dispose();
-  }
+
 }
 
 //#6 - BLoC Access & Navigation - Local, Route & Global Access with BlocProvider
