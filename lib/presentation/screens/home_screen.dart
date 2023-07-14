@@ -1,10 +1,12 @@
+import 'package:counter_app/constants/enums.dart';
 import 'package:counter_app/logic/cubit/counter_cubit.dart';
-import 'package:counter_app/presentation/screens/second_screen.dart';
+import 'package:counter_app/logic/cubit/internet_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title, this.color});
+  const HomeScreen({Key? key, required this.title, this.color})
+      : super(key: key);
 
   final String title;
   final Color? color;
@@ -24,84 +26,97 @@ class HomeScreenState extends State<HomeScreen> {
       body: Container(
         padding: const EdgeInsets.all(8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            // bloc Consumer is the combine of bloc builder and bloc listener but it does not rebuild the UI for every new state coming from the bloc
-            BlocConsumer<CounterCubit, CounterState>(
-              listener: (context, state) {
-                if (state.wasIncremented == true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Incremented!'),
-                      duration: Duration(milliseconds: 300),
-                    ),
-                  );
-                } else if (state.wasIncremented == false) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Decremented!'),
-                      duration: Duration(milliseconds: 300),
-                    ),
-                  );
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              BlocBuilder<InternetCubit, InternetState>(
+                  builder: (context, state) {
+                if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.wifi) {
+                  return const Text('Wifi');
+                } else if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.mobile) {
+                  return const Text('Mobile');
+                } else if (state is InternetDisconnected) {
+                  return const Text('Disconnected');
                 }
-              },
-              builder: (context, state) {
-                return Text(state.counterValue.toString());
-              },
-            ),
+                return const CircularProgressIndicator();
+              }),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    // blocprovider is creates and provides THE ONLY INSTANCE of a bloc to the subtree
-                    BlocProvider.of<CounterCubit>(context).decrement();
-                  },
-                  heroTag: 'btn1',
-                  child: const Icon(Icons.remove),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).increment();
-                    // context.read<CounterCubit>().increment();
-                  },
-                  heroTag: 'btn2',
-                  child: const Icon(Icons.add),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      '/second',
+              const Text('You have pushed the button this many times:'),
+              // bloc Consumer is the combine of bloc builder and bloc listener but it does not rebuild the UI for every new state coming from the bloc
+              BlocConsumer<CounterCubit, CounterState>(
+                listener: (context, state) {
+                  if (state.wasIncremented == true) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Incremented!'),
+                        duration: Duration(milliseconds: 300),
+                      ),
                     );
-                  },
-                  child: const Text(
-                    'Go to Second Screen',
-                    style: TextStyle(color: Colors.white),
+                  } else if (state.wasIncremented == false) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Decremented!'),
+                        duration: Duration(milliseconds: 300),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  return Text(state.counterValue.toString());
+                },
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      // blocprovider is creates and provides THE ONLY INSTANCE of a bloc to the subtree
+                      BlocProvider.of<CounterCubit>(context).decrement();
+                    },
+                    heroTag: 'btn1',
+                    child: const Icon(Icons.remove),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/third');
-                  },
-                  child: const Text(
-                    'Go to Second Screen',
-                    style: TextStyle(color: Colors.white),
+                  FloatingActionButton(
+                    onPressed: () {
+                      BlocProvider.of<CounterCubit>(context).increment();
+                      // context.read<CounterCubit>().increment();
+                    },
+                    heroTag: 'btn2',
+                    child: const Icon(Icons.add),
                   ),
-                ),
-              ],
-            )
-          ],
-        ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        '/second',
+                      );
+                    },
+                    child: const Text(
+                      'Go to Second Screen',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/third');
+                    },
+                    child: const Text(
+                      'Go to Third Screen',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              )
+            ]),
       ),
     );
   }

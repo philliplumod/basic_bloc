@@ -1,5 +1,4 @@
 import 'package:counter_app/logic/cubit/counter_cubit.dart';
-import 'package:counter_app/presentation/screens/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -77,8 +76,8 @@ class ThirdScreenState extends State<ThirdScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => const SecondScreen()));
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
               },
               child: const Text(
                 'Go to Home Screen',
